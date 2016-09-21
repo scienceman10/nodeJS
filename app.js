@@ -17,44 +17,24 @@ app.get("/", (req, res)=>{
 });
 
 app.get("/about", (req, res)=>{
-  res.render("about")
+  res.render("about");
 });
 
 app.get("/contact", (req, res)=>{
-  app.render("contact", {csrf:"csrf token here"})
+  res.render('contact', { csrf: 'CSRF token here' });
 });
 
 app.get("/thankyou", (req, res)=>{
   res.render("thankyou")
 });
 
-app.post("/process", (req, res)=>{
-  console.log("csrf:"+req.body._csrf);
-  console.log("email:"+req.body.email);
-  console.log("question:"+req.body.ques);
-  res.redirect(303, "thankyou");
-})
-
-app.get('/file-upload', (req, res)=>{
-  var now = new Date();
-  res.render('file-upload',{
-    year: now.getFullYear(),
-    month: now.getMonth() });
-  });
-
-app.post('/file-upload/:year/:month',(req, res)=>{
-    // Parse a file that was uploaded
-    var form = new formidable.IncomingForm();
-    form.parse(req, function(err, fields, file){
-      if(err)
-        return res.redirect(303, '/error');
-      console.log('Received File');
-
-      // Output file information
-      console.log(file);
-      res.redirect( 303, '/thankyou');
-  });
+app.post('/process', function(req, res){
+  console.log('Form : ' + req.query.form);
+  console.log('Email : ' + req.body.email);
+  console.log('Question : ' + req.body.ques);
+  res.redirect(303, '/thankyou');
 });
+
 
 app.use((req, res)=>{
   res.type("text/html");
@@ -69,5 +49,5 @@ app.use((err, req, res, next)=>{
 })
 
 app.listen(3000, function () {
-  console.log('listening');
+  console.log('app started');
 });
