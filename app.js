@@ -13,10 +13,15 @@ app.set("port", process.env.PORT || 3000);
 app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res)=>{
-  res.render("home", {title:"home"})
+  console.log(req.cookies);
+  if (req.cookies != {}) {
+    res.render("home", {title:"home", medal:"bljbljb"})
+  } else {
+    res.render("home", {title:"home"})
+  }
 });
 
-app.get("/about", (req, res)=>{
+app.get("/about", (req, res)=>{s
   res.render("about", {title:"about"});
 });
 
@@ -35,11 +40,16 @@ app.post('/process', function(req, res){
   res.redirect(303, '/thankyou');
 });
 
+app.post("/cookieset", (req, res)=>{
+  res.cookie("username", req.body.name, {expire: new Date() + 9999}).render("thankyou");
+  console.log("form cookieset set cookie:" + req.body.name);
+})
+
 app.get('/file-upload', (req, res)=>{
   var now = new Date();
   res.render('file-upload',{
     year: now.getFullYear(),
-    month: now.getMonth() });
+    month: now.getMonth(), title:"file submition" });
 });
 
 app.post("/file-upload/:year/:month", (req, res)=>{
@@ -51,7 +61,11 @@ app.post("/file-upload/:year/:month", (req, res)=>{
     console.log(file);
     res.redirect(303, "/thankyou")
   })
-})
+});
+
+app.get("/cookie", (req, res)=>{
+  res.render("cookie", {title:"get site cookie"})
+});
 
 app.use((req, res)=>{
   res.type("text/html");
