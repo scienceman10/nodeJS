@@ -15,7 +15,7 @@ app.use(express.static(__dirname + "/public"));
 app.get("/", (req, res)=>{
   console.log(req.cookies);
   if (req.cookies.username) {
-    res.render("home", {title:"home", medal:"bljbljb"})
+    res.render("home", {title:"home", medal: "Welcome Back, " + req.cookies.username})
   } else {
     res.render("home", {title:"home"})
   }
