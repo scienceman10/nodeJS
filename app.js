@@ -14,7 +14,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res)=>{
   console.log(req.cookies);
-  if (req.cookies != {}) {
+  if (req.cookies.username) {
     res.render("home", {title:"home", medal:"bljbljb"})
   } else {
     res.render("home", {title:"home"})
@@ -41,7 +41,7 @@ app.post('/process', function(req, res){
 });
 
 app.post("/cookieset", (req, res)=>{
-  res.cookie("username", req.body.name, {expire: new Date() + 9999}).render("thankyou");
+  res.cookie("username", req.body.name, {expire: new Date() + 1000}).render("thankyou");
   console.log("form cookieset set cookie:" + req.body.name);
 })
 
