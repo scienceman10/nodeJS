@@ -41,7 +41,7 @@ app.post('/process', function(req, res){
 });
 
 app.post("/cookieset", (req, res)=>{
-  res.cookie("username", req.body.name, {expire: new Date() + 1000}).render("thankyou");
+  res.cookie("username", req.body.name, {expires: new Date(Date.now() + 5 * 7 * 24 * 900000), httpOnly: true }).render("thankyou");
   console.log("form cookieset set cookie:" + req.body.name);
 })
 
