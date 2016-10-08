@@ -104,12 +104,19 @@ app.get('/viewcount', function(req, res, next){
   res.send('You viewed this page ' + req.session.views['/viewcount'] + ' times ');
 });
 
-app.get('/printfile', (req, res)=>{
+app.get("/readfile", (req, res)=>{
+  res.render("files");
+})
+
+app.get('/writefile', (req, res)=>{
   fs.readFile('./public/' + req.query.file + '.txt', function (err, data) {
    if (err) {
-       return console.error(err);
+      res.send("file does not exist")
+      return console.error(err);
+   } else {
+     res.send(data.toString());
    }
-   res.send(data.toString());
+
   });
 
 });
