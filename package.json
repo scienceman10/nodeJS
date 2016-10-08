@@ -1,7 +1,7 @@
 {
   "name": "node",
   "version": "1.0.0",
-  "description": "",
+  "description": "my website built learning node.js express",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +13,9 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
-    "nodemon": "^1.10.2"
+    "express-session": "^1.14.1",
+    "fs": "0.0.1-security",
+    "nodemon": "^1.10.2",
+    "parseurl": "^1.3.1"
   }
 }

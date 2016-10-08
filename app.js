@@ -9,6 +9,7 @@ app.use(require("body-parser").urlencoded({extended:true}));
 const formidable = require('formidable');
 const credentials = require('./credentials');
 app.use(require("cookie-parser")(credentials.cookiePass));
+const fs = require('fs');
 //more imports go here
 app.set("port", process.env.PORT || 3000);
 app.use(express.static(__dirname + "/public"));
@@ -22,7 +23,7 @@ app.get("/", (req, res)=>{
   }
 });
 
-app.get("/about", (req, res)=>{s
+app.get("/about", (req, res)=>{
   res.render("about", {title:"about"});
 });
 
@@ -41,7 +42,7 @@ app.post('/process', function(req, res){
   res.redirect(303, '/thankyou');
 });
 
-app.post("/cookieset", (req, res)=>{
+app.post("/remember", (req, res)=>{
   res.cookie("username", req.body.name, {expires: new Date(Date.now() + 5 * 7 * 24 * 900000), httpOnly: true }).render("thankyou");
   console.log("form cookieset set cookie:" + req.body.name);
 })
@@ -65,8 +66,72 @@ app.post("/file-upload/:year/:month", (req, res)=>{
 });
 
 app.get("/remember", (req, res)=>{
-  res.render("cookie", {title:"get site cookie"})
+  res.render("remember", {title:"get site cookie"})
 });
+
+app.get("/forget", (req, res)=>{
+  console.log(req.cookies.username + " forgoten");
+  res.clearCookie("username");
+  res.render("home", {name: "you've been forgotten"})
+});
+
+const session = require('express-session');
+
+const parseurl = require('parseurl');
+
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: credentials.cookiePass,
+}));
+
+app.use(function(req, res, next){
+  var views = req.session.views;
+
+  if(!views){
+    views = req.session.views = {};
+  }
+
+  var pathname = parseurl(req).pathname;
+
+  views[pathname] = (views[pathname] || 0) + 1;
+
+  next();
+
+});
+
+app.get('/viewcount', function(req, res, next){
+  res.send('You viewed this page ' + req.session.views['/viewcount'] + ' times ');
+});
+
+app.get('/printfile', (req, res)=>{
+  fs.readFile('./public/' + req.query.file + '.txt', function (err, data) {
+   if (err) {
+       return console.error(err);
+   }
+   res.send(data.toString());
+  });
+
+});
+
+app.get("/file", (req, res)=>{
+  res.render("file");
+})
+
+app.post("/file", (req, res)=>{
+  fs.writeFile('./public/' + req.body.fname + ".txt",
+    req.body.file, ()=>{
+      res.redirect(303, "/thankyou")
+      /*fs.readFile("./public/" + req.body.fname, function (err, data) {
+       if (err) {
+           return console.error(err);
+           res.redirect()
+       }
+       res.send(data.toString());
+     });*/
+  });
+
+})
 
 app.use((req, res)=>{
   res.type("text/html");
