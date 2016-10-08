@@ -1,21 +1,22 @@
+//start of setup
 const express = require('express');
 const app = express();
-//app.disable("x-powered-by").create({dafaultLayout:"main"});
+app.disable('x-powered-by');//security stuff
 const handlebars = require('express-handlebars').create({defaultLayout:"main"});
 app.engine("handlebars", handlebars.engine);
 app.set("view engine", "handlebars");
 app.use(require("body-parser").urlencoded({extended:true}));
 const formidable = require('formidable');
 const credentials = require('./credentials');
-app.use(require("cookie-parser")(credentials.cookiePass))
+app.use(require("cookie-parser")(credentials.cookiePass));
 //more imports go here
 app.set("port", process.env.PORT || 3000);
 app.use(express.static(__dirname + "/public"));
+//end of setup
 
 app.get("/", (req, res)=>{
-  console.log(req.cookies);
   if (req.cookies.username) {
-    res.render("home", {title:"home", medal: "Welcome Back, " + req.cookies.username})
+    res.render("home", {title:"home", name: "Welcome Back, " + req.cookies.username})
   } else {
     res.render("home", {title:"home"})
   }
@@ -59,18 +60,18 @@ app.post("/file-upload/:year/:month", (req, res)=>{
       return res.redirect(303, "/500");
     console.log("upload form accepted");
     console.log(file);
-    res.redirect(303, "/thankyou")
+    res.redirect(303, "/thankyou");
   })
 });
 
-app.get("/cookie", (req, res)=>{
+app.get("/remember", (req, res)=>{
   res.render("cookie", {title:"get site cookie"})
 });
 
 app.use((req, res)=>{
   res.type("text/html");
   res.status(404);
-  res.render("404", {title:"404 not found", layout:"second"});
+  res.render("404", {title:"404 not found"});
 });
 
 app.use((err, req, res, next)=>{
